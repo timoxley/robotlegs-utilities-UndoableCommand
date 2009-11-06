@@ -1,0 +1,17 @@
+bin-debug
+html-template
+*.swf
+*.swp
+*.air
+.metadata
+.actionScriptProperties
+.flexProperties
+.flexLibProperties
+.metadata
+.project
+.settings*
+TEST-*
+bin
+.FlexUnitSettings
+*.orig
+report
