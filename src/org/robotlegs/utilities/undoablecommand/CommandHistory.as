@@ -4,7 +4,7 @@ package org.robotlegs.utilities.undoablecommand
 	
 	import org.robotlegs.utilities.undoablecommand.interfaces.*;
 	
-	public class CommandHistory implements IHistory
+	public class CommandHistory
 	{
 		static public const NUM_HISTORY_STATES:uint = 999;
 		
