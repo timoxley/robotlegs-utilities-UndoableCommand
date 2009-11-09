@@ -31,16 +31,14 @@ package org.robotlegs.utilities.undoablecommand
 		
 		public function stepForward():void {
 			if (canStepForward) {
-				_historyStack[currentPosition].execute();
+				_historyStack[currentPosition++].execute();
 			}
-			currentPosition++;
 		}
 		
 		public function stepBackward():void {
 			if (canStepBackward) {
-				_historyStack[currentPosition - 1].undo();
+				_historyStack[--currentPosition].undo();
 			}
-			currentPosition--;
 		}
 		
 		public function rewind():void {
