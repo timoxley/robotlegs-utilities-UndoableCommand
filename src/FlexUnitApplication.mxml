@@ -7,11 +7,13 @@
 
 		import org.flexunit.runner.Request;
 		import tests.TestHistory;
+		import tests.TestUndoableCommand;
 
 		public function currentRunTestSuite():Array
 		{
 			var testsToRun:Array = new Array();
 			testsToRun.push(tests.TestHistory);
+			testsToRun.push(tests.TestUndoableCommand);
 			return testsToRun;
 		}
 		private function onCreationComplete():void
