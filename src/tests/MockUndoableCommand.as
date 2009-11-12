@@ -3,19 +3,15 @@ package tests
 	import org.robotlegs.utilities.undoablecommand.UndoableCommand;
 	import org.robotlegs.utilities.undoablecommand.interfaces.IUndoableCommand;
 	
+	/**
+	 * @private
+	 */
 	public class MockUndoableCommand extends UndoableCommand implements IUndoableCommand
 	{
-		private var testArray:Array;
+		static public var testArray:Array;
 		
-		public function MockUndoableCommand(testArray:Array = null) {
-			super(null, null, false);
-			if (testArray) {
-				this.testArray = testArray;
-			} else {
-				this.testArray = new Array();
-			}
-			this.execute();
-			
+		public function MockUndoableCommand() {
+			super(false, null, null);
 		}
 		
 		/**
@@ -23,7 +19,7 @@ package tests
 		 */
 		override protected function doExecute():void {
 			trace("Do");
-			this.testArray.push(new Object());
+			MockUndoableCommand.testArray.push(new Object());
 		}
 		
 		/**
@@ -31,7 +27,7 @@ package tests
 		 */
 		override protected function undoExecute():void {
 			trace("Undo");
-			this.testArray.pop();
+			MockUndoableCommand.testArray.pop();
 		}
 	}
 }

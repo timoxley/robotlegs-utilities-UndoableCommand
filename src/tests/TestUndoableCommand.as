@@ -4,6 +4,9 @@ package tests
 	
 	import org.robotlegs.utilities.undoablecommand.UndoableCommand;
 	
+	/**
+	 * @private
+	 */
 	public class TestUndoableCommand
 	{
 		// Reference declaration for class to test
@@ -23,7 +26,7 @@ package tests
 		[Before]
 		public function setupTests():void {
 			testArray = new Array();
-			_undoableCommand = new UndoableCommand(doStuff, undoStuff, false);
+			_undoableCommand = new UndoableCommand(false, doStuff, undoStuff);
 		}
 		
 		[After]
@@ -79,7 +82,8 @@ package tests
 		
 		[Test]
 		public function testDefaultFunctions():void {
-			var command:MockUndoableCommand = new MockUndoableCommand(testArray);
+			var command:MockUndoableCommand = new MockUndoableCommand();
+			MockUndoableCommand.testArray = testArray;	
 			command.execute();	
 			Assert.assertEquals(testArray.length, 1);
 			command.undo();	

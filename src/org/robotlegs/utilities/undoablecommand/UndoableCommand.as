@@ -4,7 +4,7 @@ package org.robotlegs.utilities.undoablecommand
 	
 	import org.robotlegs.utilities.undoablecommand.interfaces.IUndoableCommand;
 		
-	public class UndoableCommand extends EventDispatcher implements IUndoableCommand
+	public class UndoableCommand implements IUndoableCommand
 	{
 		/**
 		 * Keeps track of whether this command has been executed,
@@ -21,7 +21,7 @@ package org.robotlegs.utilities.undoablecommand
 		 * @param undoFunction execute this function to undo the operations of doFunction
 		 * @param autoExecute automatically executes this command on creation. Be careful when setting this false
 		 */
-		public function UndoableCommand(doFunction:Function = null, undoFunction:Function = null, autoExecute:Boolean = true) {
+		public function UndoableCommand(autoExecute:Boolean = true, doFunction:Function = null, undoFunction:Function = null) {
 			// set function defaults
 			if (doFunction is Function) {
 				this.doFunction = doFunction;
@@ -43,25 +43,27 @@ package org.robotlegs.utilities.undoablecommand
 		 * Executes the command.
 		 * If we passed in an execute function to the constructor,
 		 * execute passed-in function, otherwise execute overriden
-		 * doExecute function
+		 * doExecute function.
+		 * Will not execute more than once without first undoing
 		 */
 		public final function execute():void {
 			if (!hasExecuted) {
-				doFunction();
 				hasExecuted = true;
+				doFunction();
 			}
 		}
 		
 		/**
-		 * Executes the undocommand.
+		 * Executes the undo function.
 		 * If we passed in an undo function to the constructor,
 		 * execute passed-in undo function, otherwise execute overriden
-		 * undoExecute function
+		 * undoExecute function.
+		 * Will not undo if function has not executed.
 		 */
 		public final function undo():void {
 			if (hasExecuted) {
-				undoFunction();
 				hasExecuted = false;
+				undoFunction();	
 			}
 		}	
 		
@@ -79,7 +81,6 @@ package org.robotlegs.utilities.undoablecommand
 		protected function undoExecute():void {
 			throw new Error("Cannot call undoExecute on super. " +
 				"Subclasses must override undoExecute");
-
 		}
 	}
 }
