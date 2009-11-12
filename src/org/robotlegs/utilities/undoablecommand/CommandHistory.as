@@ -1,7 +1,5 @@
 package org.robotlegs.utilities.undoablecommand
 {
-	
-	
 	import org.robotlegs.utilities.undoablecommand.interfaces.*;
 	
 	public class CommandHistory
@@ -104,7 +102,6 @@ package org.robotlegs.utilities.undoablecommand
 		public function get numberOfHistoryItems():uint {
 			return _historyStack.length;
 		}
-		
 		
 		/** 
 		 * Push a command onto the history stack
