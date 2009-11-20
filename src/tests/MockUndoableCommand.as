@@ -1,5 +1,7 @@
 package tests
 {
+	import flash.events.EventDispatcher;
+	
 	import org.robotlegs.utilities.undoablecommand.UndoableCommand;
 	import org.robotlegs.utilities.undoablecommand.interfaces.IUndoableCommand;
 	
@@ -11,13 +13,15 @@ package tests
 		static public var testArray:Array;
 		
 		public function MockUndoableCommand() {
-			super(false, null, null);
+			eventDispatcher = new EventDispatcher();
+			super(null, null);
 		}
 		
 		/**
 		 * Cause damage to the array
 		 */
 		override protected function doExecute():void {
+			
 			trace("Do");
 			MockUndoableCommand.testArray.push(new Object());
 		}

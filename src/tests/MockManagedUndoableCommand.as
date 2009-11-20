@@ -13,10 +13,6 @@ package tests
 		 */
 		public var testArray:Array;
 		
-		public function MockManagedUndoableCommand() {
-			super(false, null, null);
-		}
-		
 		/**
 		 * Cause change to the array
 		 */
@@ -35,6 +31,7 @@ package tests
 			// pop() isn't the best undo is it
 			// will do for now
 			this.testArray.pop();
+			
 		}
 	}
 }

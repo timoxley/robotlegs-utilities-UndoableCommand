@@ -1,6 +1,7 @@
 package org.robotlegs.utilities.undoablecommand
 {
 	import flash.events.EventDispatcher;
+	import flash.events.IEventDispatcher;
 	
 	import org.robotlegs.utilities.undoablecommand.interfaces.IUndoableCommand;
 		
@@ -10,10 +11,23 @@ package org.robotlegs.utilities.undoablecommand
 		 * Keeps track of whether this command has been executed,
 		 * to prevent undoing actions that have not been done.
 		 */
-		private var hasExecuted:Boolean;
+		protected var hasExecuted:Boolean;
 		
+		/**
+		 * @private
+		 * Reference to the function to execute in the execute() function
+		 */
 		private var doFunction:Function;
+		
+		/**
+		 * @private
+		 * Reference to the undo function to execute in the undo() function 
+		 */
 		private var undoFunction:Function;
+		
+		private var _eventDispatcher:IEventDispatcher;
+		
+		private static const EXECUTE:String = "doExecuteCommand";
 		
 		/**
 		 * Creates a new UndoableCommand
@@ -21,7 +35,7 @@ package org.robotlegs.utilities.undoablecommand
 		 * @param undoFunction execute this function to undo the operations of doFunction
 		 * @param autoExecute automatically executes this command on creation. Be careful when setting this false
 		 */
-		public function UndoableCommand(autoExecute:Boolean = true, doFunction:Function = null, undoFunction:Function = null) {
+		public function UndoableCommand(doFunction:Function = null, undoFunction:Function = null) {
 			// set function defaults
 			if (doFunction is Function) {
 				this.doFunction = doFunction;
@@ -34,9 +48,6 @@ package org.robotlegs.utilities.undoablecommand
 			} else {
 				this.undoFunction = undoExecute;
 			}
-			if (autoExecute) {
-				this.execute();
-			}
 		}
 		
 		/**
@@ -47,9 +58,10 @@ package org.robotlegs.utilities.undoablecommand
 		 * Will not execute more than once without first undoing
 		 */
 		public final function execute():void {
-			if (!hasExecuted) {
-				hasExecuted = true;
+			if (!hasExecuted) {			
 				doFunction();
+				hasExecuted = true;
+				eventDispatcher.dispatchEvent(new CommandEvent(CommandEvent.EXECUTE_COMPLETE, this));
 			}
 		}
 		
@@ -62,13 +74,14 @@ package org.robotlegs.utilities.undoablecommand
 		 */
 		public final function undo():void {
 			if (hasExecuted) {
-				hasExecuted = false;
 				undoFunction();	
+				hasExecuted = false;
+				eventDispatcher.dispatchEvent(new CommandEvent(CommandEvent.UNDO_EXECUTE_COMPLETE, this));
 			}
 		}	
 		
 		/**
-		 * Subclasses must override this function.
+		 * Subclasses must override this function 
 		 */
 		protected function doExecute():void {
 			throw new Error("Cannot call doExecute on super. " +
@@ -81,6 +94,15 @@ package org.robotlegs.utilities.undoablecommand
 		protected function undoExecute():void {
 			throw new Error("Cannot call undoExecute on super. " +
 				"Subclasses must override undoExecute");
+		}
+		
+		[Inject]
+		public function get eventDispatcher():IEventDispatcher {
+			return _eventDispatcher;
+		}
+
+		public function set eventDispatcher(value:IEventDispatcher):void {
+			_eventDispatcher = value;
 		}
 	}
 }

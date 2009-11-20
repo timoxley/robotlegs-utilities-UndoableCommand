@@ -20,7 +20,7 @@
 		}
 		private function onCreationComplete():void
 		{
-			testRunner.runWithFlexUnit4Runner(currentRunTestSuite(), "Robotlegs-Undoable-Commands");
+			testRunner.runWithFlexUnit4Runner(currentRunTestSuite(), "Robotlegs-UnodableCommands");
 		}
 ]]>
 </fx:Script>

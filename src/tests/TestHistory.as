@@ -1,5 +1,7 @@
 package tests
 {
+	import flash.events.EventDispatcher;
+	
 	import flexunit.framework.Assert;
 	
 	import org.robotlegs.utilities.undoablecommand.CommandHistory;
@@ -16,6 +18,7 @@ package tests
 		[Before]
 		public function setupTests():void {
 			_testHistory = new CommandHistory();
+			_testHistory.eventDispatcher = new EventDispatcher();
 			testArray = new Array();
 			MockUndoableCommand.testArray = testArray;
 			
@@ -117,6 +120,7 @@ package tests
 		// Test both return values of canStepBackward verifying 
 		// multiple calls work
 		public function testCanStepBackward():void {
+			Assert.assertFalse(_testHistory.canStepBackward);
 			_testHistory.push(new MockUndoableCommand());
 			Assert.assertTrue(_testHistory.canStepBackward);
 			_testHistory.push(new MockUndoableCommand());
@@ -135,6 +139,7 @@ package tests
 		// Test both return values of canStepForward, verifying 
 		// multiple calls work
 		public function testCanStepForward():void {
+			Assert.assertFalse(_testHistory.canStepForward);
 			_testHistory.push(new MockUndoableCommand());
 			_testHistory.push(new MockUndoableCommand());
 			_testHistory.push(new MockUndoableCommand());
@@ -265,6 +270,8 @@ package tests
 		// Test forward/back/position settings while
 		// moving backwards & forwards
 		public function testGetCurrentCommand():void {
+			Assert.assertNull(_testHistory.currentCommand);
+			Assert.assertEquals(0, _testHistory.currentPosition);
 			var appleCommand:MockUndoableCommand = new MockUndoableCommand();
 			var bananaCommand:MockUndoableCommand = new MockUndoableCommand();
 			var pineappleCommand:MockUndoableCommand = new MockUndoableCommand();
@@ -272,6 +279,8 @@ package tests
 			_testHistory.push(appleCommand);
 			_testHistory.push(bananaCommand);
 			_testHistory.push(pineappleCommand);
+			
+			
 			
 			Assert.assertEquals(pineappleCommand, _testHistory.currentCommand);
 			_testHistory.stepBackward();
@@ -282,5 +291,7 @@ package tests
 			_testHistory.stepBackward();
 			Assert.assertEquals(appleCommand, _testHistory.currentCommand);
 		}
+		
+		
 	}
 }

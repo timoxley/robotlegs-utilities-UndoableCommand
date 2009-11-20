@@ -1,13 +1,26 @@
 package org.robotlegs.utilities.undoablecommand
 {
+	import flash.events.IEventDispatcher;
+	
 	import org.robotlegs.utilities.undoablecommand.interfaces.*;
 	
 	public class CommandHistory
 	{		
+		/**
+		 * Command history data store.
+		 * Vector chosen over array for strongtyping & speed
+		 */
 		private var _historyStack:Vector.<IUndoableCommand>;
 		
+		/**
+		 * Pointer to the current command in the history stack
+		 * Index starts at 1.
+		 * If this is 0, we are pointing to null at the start of the stack
+		 */
 		public var currentPosition:uint;
-		public var isReady:Boolean;
+		
+		[Inject]
+		public var eventDispatcher:IEventDispatcher;
 		
 		public function CommandHistory() {
 			_historyStack = new Vector.<IUndoableCommand>();
@@ -20,7 +33,6 @@ package org.robotlegs.utilities.undoablecommand
 		 */
 		public function get canStepForward():Boolean {
 			return (currentPosition < numberOfHistoryItems);
-			
 		}
 		
 		/** 
@@ -38,8 +50,11 @@ package org.robotlegs.utilities.undoablecommand
 		 */
 		public function stepForward():uint {
 			if (canStepForward) {
-				_historyStack[currentPosition++].execute();
+				_historyStack[currentPosition].execute();
+				currentPosition++;
 			}
+			this.eventDispatcher.dispatchEvent(new HistoryEvent(HistoryEvent.STEP_FORWARD_COMPLETE, currentCommand));
+
 			return currentPosition;
 		}
 		
@@ -49,9 +64,29 @@ package org.robotlegs.utilities.undoablecommand
 		 * @return position in history stack after this operation
 		 */
 		public function stepBackward():uint {
+			var storeCurrentPosition:uint = currentPosition;
 			if (canStepBackward) {
-				_historyStack[--currentPosition].undo();
+				// Hacky workaround:
+				// if undo was invoked from a commandHistory object,
+				// _historyStack[currentPosition - 1].undo() calls
+				// stepBackward() again (), in which case we want to prevent it from
+				// updating the current position twice. I'm certain thar be a better way.
+				_historyStack[currentPosition - 1].undo();
+				currentPosition = storeCurrentPosition - 1;
 			}
+			
+			// If there's no undone command, 
+			// dispatch null as the historyevent command
+			var undoneCommand:IUndoableCommand;
+			if (_historyStack.length > 0 && currentPosition != 0) {
+				//the undone command
+				undoneCommand = _historyStack[currentPosition];
+			} else {
+				undoneCommand = null;
+			}
+
+			this.eventDispatcher.dispatchEvent(new HistoryEvent(HistoryEvent.STEP_BACKWARD_COMPLETE, undoneCommand));
+
 			return currentPosition;
 		}
 		
@@ -69,9 +104,12 @@ package org.robotlegs.utilities.undoablecommand
 				positionToMoveTo = currentPosition - numTimes;
 			}
 			
+			// Move backward
 			while(canStepBackward && currentPosition != positionToMoveTo) {
 				stepBackward();
 			}
+			
+			this.eventDispatcher.dispatchEvent(new HistoryEvent(HistoryEvent.REWIND_COMPLETE, currentCommand));
 			return currentPosition;
 		}
 		
@@ -89,15 +127,19 @@ package org.robotlegs.utilities.undoablecommand
 				positionToMoveTo = currentPosition + numTimes;
 			}
 			
+			// Move forward
 			while(canStepForward && currentPosition != positionToMoveTo) {
 				stepForward();
 			}
+			
+			this.eventDispatcher.dispatchEvent(new HistoryEvent(HistoryEvent.FAST_FORWARD_COMPLETE, currentCommand));
+			
 			return currentPosition;
 		}
 		
 		/** 
-		 * @return number of items in history, both forward 
-		 * and backward from current position
+		 * @return total number of items in history, 
+		 * irrespective of whether they have been undone
 		 */
 		public function get numberOfHistoryItems():uint {
 			return _historyStack.length;
@@ -105,20 +147,47 @@ package org.robotlegs.utilities.undoablecommand
 		
 		/** 
 		 * Push a command onto the history stack
+		 * If there are commands that are yet to be redone,  
+		 * those commands are lost and this command becomes
+		 * the top of the command stack.
+		 * 
 		 * @return position in history stack after this operation
 		 */
 		public function push(command:IUndoableCommand):uint {
+			
 			if (currentPosition != numberOfHistoryItems) {
 				_historyStack = _historyStack.slice(0, currentPosition);	
 			}
 			_historyStack.push(command);
-			// Executes the command
+			
+			// Execute the command & move pointer forward
 			stepForward();
 			return currentPosition;
 		}
 		
+		/**
+		 * @return command at the current position in the history stack,
+		 * or null if we're at position 0, or there are simply no commands
+		 * @see currentPosition
+		 */
 		public function get currentCommand():IUndoableCommand {
+			if (_historyStack.length == 0 || currentPosition == 0) {
+				return null;
+			}
 			return _historyStack[currentPosition - 1];
+		}
+		
+		/**
+		 * @private
+		 */
+		public function toString():String {
+			var output:String = "";
+			var count:uint = 0;
+			for each(var command:IUndoableCommand in _historyStack) {
+				output += String(count) + String(command) + "\n";
+				count++;
+			}
+			return output;
 		}
 	}
 }

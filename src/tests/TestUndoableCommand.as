@@ -1,5 +1,7 @@
 package tests
 {
+	import flash.events.EventDispatcher;
+	
 	import flexunit.framework.Assert;
 	
 	import org.robotlegs.utilities.undoablecommand.UndoableCommand;
@@ -10,10 +12,11 @@ package tests
 	public class TestUndoableCommand
 	{
 		// Reference declaration for class to test
-		private var _undoableCommand : UndoableCommand;
+		private var _undoableCommand:UndoableCommand;
+		
 		private var testArray:Array;
 		private var testObject:Object;
-		
+		private var eventBus:EventDispatcher;
 		
 		private function doStuff():void {
 			testArray.push(testObject);
@@ -26,14 +29,16 @@ package tests
 		[Before]
 		public function setupTests():void {
 			testArray = new Array();
-			_undoableCommand = new UndoableCommand(false, doStuff, undoStuff);
+			eventBus = new EventDispatcher();
+			_undoableCommand = new UndoableCommand(doStuff, undoStuff);
+			_undoableCommand.eventDispatcher = eventBus;
 		}
 		
 		[After]
 		public function reset():void {
 			_undoableCommand = null;
 			testArray = null;
-			
+			eventBus = null;
 		}
 		
 		[Test]
@@ -61,8 +66,7 @@ package tests
 			_undoableCommand.execute();	
 			_undoableCommand.execute();
 			_undoableCommand.execute();
-			Assert.assertEquals(testArray.length, 1);
-			
+			Assert.assertEquals(testArray.length, 1);	
 		}
 		
 		[Test]
