@@ -2,27 +2,22 @@ package tests
 {
 	import flash.events.EventDispatcher;
 	
-	import org.robotlegs.utilities.undoablecommand.UndoableCommand;
-	import org.robotlegs.utilities.undoablecommand.interfaces.IUndoableCommand;
+	import org.robotlegs.utilities.undoablecommand.LinkedUndoableCommand;
 	
-	/**
-	 * @private
-	 */
-	public class MockUndoableCommand extends UndoableCommand implements IUndoableCommand
+	public class MockLinkedUndoableCommand extends LinkedUndoableCommand
 	{
-		public var testArray:Array = new Array();;
-		
-		public function MockUndoableCommand() {
+		public function MockLinkedUndoableCommand(doFunction:Function=null, undoFunction:Function=null)
+		{
 			eventDispatcher = new EventDispatcher();
-			super();
+			super(null, null);
 		}
+		
+		public var testArray:Array;
 		
 		/**
 		 * Cause damage to the array
 		 */
 		override protected function doExecute():Boolean {
-			
-			trace("Do ta:" + testArray);
 			testArray.push(new Object());
 			return super.doExecute();
 		}
@@ -31,7 +26,6 @@ package tests
 		 * Undo the damage on the array
 		 */
 		override protected function undoExecute():Boolean {
-			trace("Undo ta:" + testArray);
 			testArray.pop();
 			return super.undoExecute();
 		}
