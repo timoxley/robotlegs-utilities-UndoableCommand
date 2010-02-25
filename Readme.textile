@@ -12,14 +12,17 @@ h2. Quickstart
 * Create your command which extends ManagedUndoableCommand (I know, it's wordy, :/ )
 * Override the protected methods doExecute and undoExecute. doExecute should contain the code you want to execute when the command is fired. undoExecute should contain whatever code is needed to manually undo the actions performed by doExecute. The last line in both of these methods should be the call to super.doExecute()/undoExecute().
 * Put the following lines (+ necessary imports) into your Robotlegs context:
-	bc..
+
+	<pre>
 	// CommandHistory manages undo/redo history
 	injector.mapSingleton(CommandHistory);
 	// Events to trigger undo and redo
 	commandMap.mapEvent(HistoryEvent.STEP_FORWARD, StepForwardCommand, HistoryEvent);
 	commandMap.mapEvent(HistoryEvent.STEP_BACKWARD, StepBackwardCommand, HistoryEvent);
-	
+	</pre>
+
 	* Set a Button/Mediator to actually fire the HistoryEvent.STEP_FORWARD/BACKWARD events on the robotlegs event bus and you're done! :)
 	
 h4. Cancelling a Command
-	If you want to cancel a command you can call cancel() in your doExecute method and the command will not be added to the history stack (though you will have to ensure you don't actually make any changes to your data after you do this)	
+
+If you want to cancel a command you can call cancel() in your doExecute method and the command will not be added to the history stack (though you will have to ensure you don't actually make any changes to your data after you do this)	
