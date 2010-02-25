@@ -21,6 +21,7 @@ h2. Quickstart
 	commandMap.mapEvent(HistoryEvent.STEP_BACKWARD, StepBackwardCommand, HistoryEvent);
 	</pre>
 
+	* Map some event to the Command you created (just like you would with any normal robotlegs command)
 	* Set a Button/Mediator to actually fire the HistoryEvent.STEP_FORWARD/BACKWARD events on the robotlegs event bus and you're done! :)
 	
 h4. Cancelling a Command
