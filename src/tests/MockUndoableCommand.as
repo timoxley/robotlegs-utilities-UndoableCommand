@@ -10,7 +10,7 @@ package tests
 	 */
 	public class MockUndoableCommand extends UndoableCommand implements IUndoableCommand
 	{
-		public var testArray:Array = new Array();;
+		public static var testArray:Array = new Array();
 		
 		public function MockUndoableCommand() {
 			eventDispatcher = new EventDispatcher();
@@ -20,20 +20,20 @@ package tests
 		/**
 		 * Cause damage to the array
 		 */
-		override protected function doExecute():Boolean {
+		override protected function doExecute():void {
 			
 			trace("Do ta:" + testArray);
 			testArray.push(new Object());
-			return super.doExecute();
+			super.doExecute();
 		}
 		
 		/**
 		 * Undo the damage on the array
 		 */
-		override protected function undoExecute():Boolean {
+		override protected function undoExecute():void {
 			trace("Undo ta:" + testArray);
 			testArray.pop();
-			return super.undoExecute();
+			super.undoExecute();
 		}
 	}
 }

@@ -1,5 +1,25 @@
-h2. Undoable Commands for Robotlegs Framework
+h1. Undoable Commands for Robotlegs Framework
 
 * Keeps a linear history of executed Commands
 * Step back and forward through history
 * Get the ladies
+
+
+h2. Quickstart
+
+* Download the "latest release swc":http://github.com/secoif/robotlegs-utilities-UndoableCommand/downloads
+* Include downloaded swc in your project
+* Create your command which extends ManagedUndoableCommand (I know, it's wordy, :/ )
+* Override the protected methods doExecute and undoExecute. doExecute should contain the code you want to execute when the command is fired. undoExecute should contain whatever code is needed to manually undo the actions performed by doExecute. I will usually capture the state of properties I'm changing in doExecute into private vars so I can easily restore those properties in undoExecute.
+* Put the following lines (+ necessary imports) into your Robotlegs context:
+	@
+	// CommandHistory manages undo/redo history
+	injector.mapSingleton(CommandHistory);
+	// Events to trigger undo and redo
+	commandMap.mapEvent(HistoryEvent.STEP_FORWARD, StepForwardCommand, HistoryEvent);
+	commandMap.mapEvent(HistoryEvent.STEP_BACKWARD, StepBackwardCommand, HistoryEvent);
+	@
+	* Set a Button/Mediator to actually fire the STEP_FORWARD/BACKWARD events on the robotlegs event bus and you're done! :)
+	
+
+	

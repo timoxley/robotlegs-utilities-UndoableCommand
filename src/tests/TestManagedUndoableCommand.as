@@ -186,5 +186,27 @@ package tests
 			Assert.assertEquals(appleCommand, history.currentCommand);
 			Assert.assertEquals(1, history.currentPosition);
 		}
+		
+		[Test]
+		// Test cancelling the command
+		public function testCancellingDoesNothing():void {
+			var appleCommand:MockManagedUndoableCommand = createCommand();
+			appleCommand.shouldCancel = true;
+			appleCommand.execute();
+			//Make sure nothing actually happened
+			Assert.assertEquals(0, history.currentPosition);
+			Assert.assertNull(history.currentCommand);
+			Assert.assertEquals(0, testArray.length);
+		
+		}
+		
+		[Test(expects="Error")]
+		// Test trying to undo a cancelled command throws an error
+		public function testUndoingACancelledCommandErrors():void {
+			var appleCommand:MockManagedUndoableCommand = createCommand();
+			appleCommand.shouldCancel = true;
+			appleCommand.execute();
+			appleCommand.undo();
+		}
 	}
 }

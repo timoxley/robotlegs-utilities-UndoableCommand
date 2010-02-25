@@ -93,6 +93,6 @@ package tests
 			command.undo();	
 			Assert.assertEquals(testArray.length, 0);
 		}
-		
+
 	}
 }

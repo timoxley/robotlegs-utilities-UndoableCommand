@@ -84,16 +84,14 @@ package org.robotlegs.utilities.undoablecommand
 		 * Subclasses must override this function 
 		 */
 		protected function doExecute():void {
-			throw new Error("Cannot call doExecute on super. " +
-				"Subclasses must override doExecute");
+			
 		}
 		
 		/**
 		 * Subclasses must override this function.
 		 */
 		protected function undoExecute():void {
-			throw new Error("Cannot call undoExecute on super. " +
-				"Subclasses must override undoExecute");
+			
 		}
 		
 		[Inject]

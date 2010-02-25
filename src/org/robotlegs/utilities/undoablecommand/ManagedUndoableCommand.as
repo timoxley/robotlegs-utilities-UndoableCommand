@@ -1,5 +1,6 @@
 package org.robotlegs.utilities.undoablecommand
 {
+	import mx.messaging.messages.ErrorMessage;
 	
 	/**
 	 * This command handles its own history when provided/injected with a CommandHistory object
@@ -9,6 +10,7 @@ package org.robotlegs.utilities.undoablecommand
 	 */
 	public class ManagedUndoableCommand extends UndoableCommand
 	{
+
 		/**
 		 * @private
 		 * Flag true after this Command has been pushed to CommandHistory
@@ -20,6 +22,9 @@ package org.robotlegs.utilities.undoablecommand
 		 * Flag true after this Command has been stepped back by CommandHistory
 		 */
 		private var hasSteppedBack:Boolean;
+		
+		protected var isCancelled:Boolean = false;
+		
 		/**
 		 * Reference to the CommandHistory being used by this Command
 		 */
@@ -33,6 +38,11 @@ package org.robotlegs.utilities.undoablecommand
 			super(doFunction, undoFunction);
 		}
 		
+		public function cancel():void {
+			isCancelled = true;
+			trace("isCancelled");
+		}
+		
 		/**
 		 * Executes the command.
 		 * Override this function in your subclasses to implement your command's actions.
@@ -42,11 +52,12 @@ package org.robotlegs.utilities.undoablecommand
 		 */
 		override protected function doExecute():void {
 			// Only push to history once we actually try to execute this command
-			if (!hasRegisteredWithHistory) {
+			if (!hasRegisteredWithHistory && !isCancelled) {
 				hasRegisteredWithHistory = true;
 				hasExecuted = true;
 				history.push(this);
 			}
+			super.doExecute();
 		}
 		
 		/**
@@ -54,7 +65,7 @@ package org.robotlegs.utilities.undoablecommand
 		 * @inheritDoc
 		 * @see doExecute
 		 */
-		override protected function undoExecute() : void {
+		override protected function undoExecute():void {
 			if (hasExecuted) {
 				this.hasExecuted = false;
 				
@@ -67,7 +78,12 @@ package org.robotlegs.utilities.undoablecommand
 					history.stepBackward();
 					hasSteppedBack = false;
 				}
+				
 			}
+			if (isCancelled) {
+				throw new Error("Trying to undo a cancelled command!");
+			}
+			super.undoExecute();
 		}
 		
 		/**

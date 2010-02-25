@@ -11,25 +11,27 @@ package tests {
 		 * Reference to some array to be tested on.
 		 */
 		public var testArray:Array;
-		
+		public var shouldCancel:Boolean = false;
 		/**
 		 * Cause change to the array
 		 */
-		override protected function doExecute():Boolean {
-			super.doExecute();
+		override protected function doExecute():void {
+			if (shouldCancel) {
+				cancel();
+				return;
+			}
 			this.testArray.push(new Object());
-			return super.doExecute();
+			super.doExecute();
 		}
 		
 		/**
 		 * Undo the change on the array
 		 */
-		override protected function undoExecute():Boolean {
-			super.undoExecute();
+		override protected function undoExecute():void {
 			// pop() isn't the best undo is it
 			// will do for now
 			this.testArray.pop();
-			return super.undoExecute();
+			super.undoExecute();
 		}
 	}
 }

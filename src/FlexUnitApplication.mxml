@@ -7,6 +7,7 @@
 
 		import org.flexunit.runner.Request;
 		import tests.TestHistory;
+		import tests.TestHistoryEvents;
 		import tests.TestManagedUndoableCommand;
 		import tests.TestUndoableCommand;
 
@@ -14,13 +15,14 @@
 		{
 			var testsToRun:Array = new Array();
 			testsToRun.push(tests.TestHistory);
+			testsToRun.push(tests.TestHistoryEvents);
 			testsToRun.push(tests.TestManagedUndoableCommand);
 			testsToRun.push(tests.TestUndoableCommand);
 			return testsToRun;
 		}
 		private function onCreationComplete():void
 		{
-			testRunner.runWithFlexUnit4Runner(currentRunTestSuite(), "Robotlegs-UnodableCommands");
+			testRunner.runWithFlexUnit4Runner(currentRunTestSuite(), "robotlegs-utilities-UndoableCommand");
 		}
 ]]>
 </fx:Script>

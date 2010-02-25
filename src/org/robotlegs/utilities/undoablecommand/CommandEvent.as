@@ -19,6 +19,7 @@ package org.robotlegs.utilities.undoablecommand
 		 */
 		public static const UNDO_EXECUTE_COMPLETE:String = "undoExecuteComplete";
 		
+		public static const CANCELLED:String = "executeCancelled";
 		/**
 		 * The command associated with the event
 		 */
