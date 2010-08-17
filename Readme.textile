@@ -8,6 +8,8 @@ h2. Features
 * Step back and forward through history
 * Get the ladies
 
+h2. Main Classes
+
 h3. UndoableCommandBase
 
 Fairly barebones undoable command. You can use this with your own history controller or use the classes below for more advanced functionality. 
