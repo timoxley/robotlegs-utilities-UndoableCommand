@@ -9,12 +9,15 @@ h2. Features
 * Get the ladies
 
 h3. UndoableCommandBase
+
 Fairly barebones undoable command. You can use this with your own history controller or use the classes below for more advanced functionality. 
 
 h3. CommandHistory
+
 The history controller that provides the interface to move forward and backward through your command history.
 
 h3. UndoableCommand
+
 This command handles adding itself to a provided/injected CommandHistory object.
 
 _See the generated asdocs provided in the repository for more information_
