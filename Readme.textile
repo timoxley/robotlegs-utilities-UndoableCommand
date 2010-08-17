@@ -1,7 +1,6 @@
 h1. Undoable Commands and History Controller for the Robotlegs Framework
 
-Undoable Commands aims to fill all possible 
-UndoableCommandBase is a fairly barebones undoable command framework. You can use this to implement your own history controller (whether this is ) 
+Undoable Commands aims to provide the most useful functions you'd need for undo/redo functionality in a gui app. I've successfully used in on a number of private projects.
 
 h2. Features
 
@@ -9,6 +8,16 @@ h2. Features
 * Step back and forward through history
 * Get the ladies
 
+h3. UndoableCommandBase
+Fairly barebones undoable command. You can use this with your own history controller or use the classes below for more advanced functionality. 
+
+h3. CommandHistory
+The history controller that provides the interface to move forward and backward through your command history.
+
+h3. UndoableCommand
+This command handles adding itself to a provided/injected CommandHistory object.
+
+_See the generated asdocs provided in the repository for more information_
 
 h2. Quickstart
 
@@ -32,3 +41,6 @@ h2. Quickstart
 h4. Cancelling a Command
 
 If you want to cancel a command you can call cancel() in your doExecute method and the command will not be added to the history stack (though you will have to ensure you don't actually make any changes to your data after you do this)	
+
+h4. TODO
+Implement a minimal linked list variation based on UndoableCommandBase with no history controller 
