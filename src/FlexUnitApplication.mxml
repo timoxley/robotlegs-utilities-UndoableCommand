@@ -1,30 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!-- This is an auto generated file and is not intended for modification. -->
+
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
-			   xmlns:mx="library://ns.adobe.com/flex/halo" minWidth="1024" minHeight="768" xmlns:flexunit="flexunit.flexui.*"    creationComplete="onCreationComplete()" >	
-<fx:Script>
-	<![CDATA[
-
-		import org.flexunit.runner.Request;
-		import tests.TestHistory;
-		import tests.TestHistoryEvents;
-		import tests.TestManagedUndoableCommand;
-		import tests.TestUndoableCommand;
-
-		public function currentRunTestSuite():Array
-		{
-			var testsToRun:Array = new Array();
-			testsToRun.push(tests.TestHistory);
-			testsToRun.push(tests.TestHistoryEvents);
-			testsToRun.push(tests.TestManagedUndoableCommand);
-			testsToRun.push(tests.TestUndoableCommand);
-			return testsToRun;
-		}
-		private function onCreationComplete():void
-		{
-			testRunner.runWithFlexUnit4Runner(currentRunTestSuite(), "robotlegs-utilities-UndoableCommand");
-		}
-]]>
-</fx:Script>
-<flexunit:FlexUnitTestRunnerUI id="testRunner"/>
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600" xmlns:flexui="flexunit.flexui.*" creationComplete="onCreationComplete()">
+	<fx:Script>
+		<![CDATA[
+			import tests.TestUndoableCommand;
+			import tests.TestManagedUndoableCommand;
+			import tests.TestHistoryEvents;
+			import tests.TestHistory;
+			
+			public function currentRunTestSuite():Array
+			{
+				var testsToRun:Array = new Array();
+				testsToRun.push(tests.TestHistory);
+				testsToRun.push(tests.TestHistoryEvents);
+				testsToRun.push(tests.TestManagedUndoableCommand);
+				testsToRun.push(tests.TestUndoableCommand);
+				return testsToRun;
+			}
+			
+			
+			private function onCreationComplete():void
+			{
+				testRunner.runWithFlexUnit4Runner(currentRunTestSuite(), "robotlegs-utilities-UndoableCommand");
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<flexui:FlexUnitTestRunnerUI id="testRunner">
+	</flexui:FlexUnitTestRunnerUI>
 </s:Application>

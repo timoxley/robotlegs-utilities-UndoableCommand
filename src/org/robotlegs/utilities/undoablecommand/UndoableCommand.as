@@ -1,106 +1,102 @@
 package org.robotlegs.utilities.undoablecommand
 {
-	import flash.events.EventDispatcher;
-	import flash.events.IEventDispatcher;
+	import mx.messaging.messages.ErrorMessage;
 	
-	import org.robotlegs.utilities.undoablecommand.interfaces.IUndoableCommand;
-		
-	public class UndoableCommand implements IUndoableCommand
+	/**
+	 * This command handles adding itself to the provided/injected CommandHistory.
+	 * All functions assume the CommandHistory dependency (history) has been provided.
+	 * UndoableCommands are only pushed to the CommandHistory once the Command has been executed, 
+	 * and removed once the Command has been undone.
+	 */
+	public class UndoableCommand extends UndoableCommandBase
 	{
+
 		/**
-		 * Keeps track of whether this command has been executed,
-		 * to prevent undoing actions that have not been done.
+		 * @private
+		 * Flag true after this Command has been pushed to CommandHistory
 		 */
-		protected var hasExecuted:Boolean;
+		private var hasRegisteredWithHistory:Boolean;	
 		
 		/**
 		 * @private
-		 * Reference to the function to execute in the execute() function
+		 * Flag true after this Command has been stepped back by CommandHistory
 		 */
-		private var doFunction:Function;
+		private var hasSteppedBack:Boolean;
+		
+		protected var isCancelled:Boolean = false;
 		
 		/**
-		 * @private
-		 * Reference to the undo function to execute in the undo() function 
+		 * Reference to the CommandHistory being used by this Command
 		 */
-		private var undoFunction:Function;
-		
-		private var _eventDispatcher:IEventDispatcher;
-		
-		private static const EXECUTE:String = "doExecuteCommand";
+		[Inject]
+		public var history:CommandHistory;
 		
 		/**
-		 * Creates a new UndoableCommand
-		 * @param doFunction the function to execute
-		 * @param undoFunction execute this function to undo the operations of doFunction
-		 * @param autoExecute automatically executes this command on creation. Be careful when setting this false
+		 * @inheritDoc 
 		 */
 		public function UndoableCommand(doFunction:Function = null, undoFunction:Function = null) {
-			// set function defaults
-			if (doFunction is Function) {
-				this.doFunction = doFunction;
-			} else {
-				this.doFunction = doExecute;
-			}
-			
-			if (undoFunction is Function) {
-				this.undoFunction = undoFunction;
-			} else {
-				this.undoFunction = undoExecute;
-			}
+			super(doFunction, undoFunction);
+		}
+		
+		public function cancel():void {
+			isCancelled = true;
+			trace("isCancelled");
 		}
 		
 		/**
 		 * Executes the command.
-		 * If we passed in an execute function to the constructor,
-		 * execute passed-in function, otherwise execute overriden
-		 * doExecute function.
-		 * Will not execute more than once without first undoing
+		 * Override this function in your subclasses to implement your command's actions.
+		 * Note command is only automatically pushed to history once we try to execute this command
+		 * @inheritDoc
+		 * @see undoExecute
 		 */
-		public final function execute():void {
-			if (!hasExecuted) {			
-				doFunction();
+		override protected function doExecute():void {
+			// Only push to history once we actually try to execute this command
+			if (!hasRegisteredWithHistory && !isCancelled) {
+				hasRegisteredWithHistory = true;
 				hasExecuted = true;
-				eventDispatcher.dispatchEvent(new CommandEvent(CommandEvent.EXECUTE_COMPLETE, this));
+				history.push(this);
 			}
+			super.doExecute();
 		}
 		
 		/**
-		 * Executes the undo function.
-		 * If we passed in an undo function to the constructor,
-		 * execute passed-in undo function, otherwise execute overriden
-		 * undoExecute function.
-		 * Will not undo if function has not executed.
+		 * Override this function in your subclasses to implement the undo of the actions performed in doExecute().
+		 * @inheritDoc
+		 * @see doExecute
+		 * @throws Error Prevents history corruption by throwing error if trying to undo this command and it's not at the top of the history (i.e. next to be undone). 
 		 */
-		public final function undo():void {
+		override protected function undoExecute():void {
 			if (hasExecuted) {
-				undoFunction();	
-				hasExecuted = false;
-				eventDispatcher.dispatchEvent(new CommandEvent(CommandEvent.UNDO_EXECUTE_COMPLETE, this));
+				this.hasExecuted = false;
+				
+				if (!hasSteppedBack) {
+					hasSteppedBack = true;
+					if (history.currentCommand != this) {
+						throw new Error("Cannot undo command unless this command is first in command history!");
+					}
+					
+					history.stepBackward();
+					hasSteppedBack = false;
+				}
+				
 			}
-		}	
-		
-		/**
-		 * Subclasses must override this function 
-		 */
-		protected function doExecute():void {
-			
+			if (isCancelled) {
+				throw new Error("Trying to undo a cancelled command!");
+			}
+			super.undoExecute();
 		}
 		
 		/**
-		 * Subclasses must override this function.
+		 * @private
+		 * Checks if this command has added itself to the command history.
+		 * Ensures we don't let this Command push to the CommandHistory more than once.
 		 */
-		protected function undoExecute():void {
-			
-		}
-		
-		[Inject]
-		public function get eventDispatcher():IEventDispatcher {
-			return _eventDispatcher;
-		}
-
-		public function set eventDispatcher(value:IEventDispatcher):void {
-			_eventDispatcher = value;
+		private function registerIfRequired():void {
+			if (!hasRegisteredWithHistory) {
+				hasRegisteredWithHistory = true;
+				history.push(this);
+			}
 		}
 	}
 }

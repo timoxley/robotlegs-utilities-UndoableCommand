@@ -4,18 +4,22 @@ package org.robotlegs.utilities.undoablecommand
 	
 	import org.robotlegs.utilities.undoablecommand.interfaces.*;
 	
+	/**
+	 * Provides an interface to manage undo/redo history and fires events on the eventDispatcher 
+	 * when history events occur. 
+	 */
 	public class CommandHistory
 	{		
 		/**
 		 * Command history data store.
-		 * Vector chosen over array for strongtyping & speed
+		 * Vector chosen over array for strong typing & speed
 		 */
 		private var _historyStack:Vector.<IUndoableCommand>;
 		
 		/**
 		 * Pointer to the current command in the history stack
-		 * Index starts at 1.
-		 * If this is 0, we are pointing to null at the start of the stack
+		 * First command starts at index 1.
+		 * If this is 0, we are pointing to no command (null) at the start of the stack
 		 */
 		public var currentPosition:uint;
 		
@@ -28,7 +32,7 @@ package org.robotlegs.utilities.undoablecommand
 		}
 		
 		/** 
-		 * Test if we can move forward through the history stack
+		 * True if there's a command to redo
 		 * @return true if there's a command to redo
 		 */
 		public function get canStepForward():Boolean {
@@ -36,7 +40,7 @@ package org.robotlegs.utilities.undoablecommand
 		}
 		
 		/** 
-		 * Test if we can move backward through the history stack
+		 * True if there's a command to undo
 		 * @return true if there's a command to undo
 		 */
 		public function get canStepBackward():Boolean {
@@ -44,8 +48,8 @@ package org.robotlegs.utilities.undoablecommand
 		}
 		
 		/** 
-		 * Move forward through the history stack
-		 * i.e. redo/execute the next command on the history stack
+		 * 
+		 * Redo/execute the next command on the history stack
 		 * @return position in history stack after this operation
 		 */
 		public function stepForward():uint {
@@ -59,8 +63,7 @@ package org.robotlegs.utilities.undoablecommand
 		}
 		
 		/** 
-		 * Move backward through the history stack
-		 * i.e. undo the previous command on the history stack
+		 * Undo the previous command on the history stack and set the currentCommand to the previous command 
 		 * @return position in history stack after this operation
 		 */
 		public function stepBackward():uint {
@@ -91,9 +94,9 @@ package org.robotlegs.utilities.undoablecommand
 		}
 		
 		/** 
-		 * Undo all/some commands
-		 * @param numTimes number of positions to move backward. The default, 0, rewinds to the start of the history
-		 * @return position in history stack after this operation
+		 * Undo all or some number of commands.
+		 * @param numTimes number of positions to move backward. The default, 0, rewinds to the start of the history (undoes all commands)
+		 * @return position in history stack after the rewind operation completes
 		 */
 		public function rewind(numTimes:uint = 0):uint {
 			var positionToMoveTo:uint;
@@ -114,9 +117,10 @@ package org.robotlegs.utilities.undoablecommand
 		}
 		
 		/** 
-		 * Redo all/some commands
-		 * @param numTimes number of positions to move forward. The default, 0, fast forwards to the end of the history
-		 * @return position in history stack after this operation
+		 * Redo all or some number of commands.
+		 * @param numTimes number of positions to move forward. 
+		 * The default, 0, fast forwards to the last item in the history (most recent).
+		 * @return position in history stack after the fastForward operation completes
 		 */
 		public function fastForward(numTimes:uint = 0):uint {
 			var positionToMoveTo:uint;
@@ -138,18 +142,18 @@ package org.robotlegs.utilities.undoablecommand
 		}
 		
 		/** 
-		 * @return total number of items in history, 
-		 * irrespective of whether they have been undone
+		 * Total number of items in history, irrespective of their undone/redone state. 
+		 * @return total number of items in history
 		 */
 		public function get numberOfHistoryItems():uint {
 			return _historyStack.length;
 		}
 		
 		/** 
-		 * Push a command onto the history stack
-		 * If there are commands that are yet to be redone,  
+		 * Push a new command into the current position on the history stack and execute it.
+		 * If there are commands further forward in the history stack,  
 		 * those commands are lost and this command becomes
-		 * the top of the command stack.
+		 * new top of the command stack.
 		 * 
 		 * @return position in history stack after this operation
 		 */
@@ -166,6 +170,7 @@ package org.robotlegs.utilities.undoablecommand
 		}
 		
 		/**
+		 * Gets the command at the top of the history stack. This command will have already been executed.
 		 * @return command at the current position in the history stack,
 		 * or null if we're at position 0, or there are simply no commands
 		 * @see currentPosition

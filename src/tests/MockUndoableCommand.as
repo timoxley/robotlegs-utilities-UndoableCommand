@@ -2,13 +2,13 @@ package tests
 {
 	import flash.events.EventDispatcher;
 	
-	import org.robotlegs.utilities.undoablecommand.UndoableCommand;
+	import org.robotlegs.utilities.undoablecommand.UndoableCommandBase;
 	import org.robotlegs.utilities.undoablecommand.interfaces.IUndoableCommand;
 	
 	/**
 	 * @private
 	 */
-	public class MockUndoableCommand extends UndoableCommand implements IUndoableCommand
+	public class MockUndoableCommand extends UndoableCommandBase implements IUndoableCommand
 	{
 		public static var testArray:Array = new Array();
 		

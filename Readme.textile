@@ -1,4 +1,9 @@
-h1. Undoable Commands for Robotlegs Framework
+h1. Undoable Commands and History Controller for the Robotlegs Framework
+
+Undoable Commands aims to fill all possible 
+UndoableCommandBase is a fairly barebones undoable command framework. You can use this to implement your own history controller (whether this is ) 
+
+h2. Features
 
 * Keeps a linear history of executed Commands
 * Step back and forward through history
@@ -7,14 +12,14 @@ h1. Undoable Commands for Robotlegs Framework
 
 h2. Quickstart
 
-* Download the "latest release swc":http://github.com/secoif/robotlegs-utilities-UndoableCommand/downloads Note the swc is compiled with a Flex 4 nightly build. It should work just fine, but let me know if you have any trouble using it. Feel free to download source and compile for yourself though. The test cases depend on FlexUnit4.
+* Download the "latest release swc":http://github.com/secoif/robotlegs-utilities-UndoableCommand/downloads Feel free to download source and compile for yourself, the test cases depend on FlexUnit4.
 * Include downloaded swc in your project
-* Create your command which extends ManagedUndoableCommand (I know, it's wordy, :/ )
+* Create your command which extends UndoableCommand
 * Override the protected methods doExecute and undoExecute. doExecute should contain the code you want to execute when the command is fired. undoExecute should contain whatever code is needed to manually undo the actions performed by doExecute. The last line in both of these methods should be the call to super.doExecute()/undoExecute().
 * Put the following lines (+ necessary imports) into your Robotlegs context:
 
 	<pre>
-	// CommandHistory manages undo/redo history
+	// Create a CommandHistory to manages undo/redo history
 	injector.mapSingleton(CommandHistory);
 	// Events to trigger undo and redo
 	commandMap.mapEvent(HistoryEvent.STEP_FORWARD, StepForwardCommand, HistoryEvent);
