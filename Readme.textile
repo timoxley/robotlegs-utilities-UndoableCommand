@@ -1,4 +1,9 @@
-h1. Undoable Commands for Robotlegs Framework
+h1. Undoable Commands and History Controller for the Robotlegs Framework
+
+Undoable Commands aims to fill all possible 
+UndoableCommandBase is a fairly barebones undoable command framework. You can use this to implement your own history controller (whether this is ) 
+
+h2. Features
 
 * Keeps a linear history of executed Commands
 * Step back and forward through history
