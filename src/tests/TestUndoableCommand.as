@@ -4,7 +4,7 @@ package tests
 	
 	import flexunit.framework.Assert;
 	
-	import org.robotlegs.utilities.undoablecommand.UndoableCommand;
+	import org.robotlegs.utilities.undoablecommand.UndoableCommandBase;
 	
 	/**
 	 * @private
@@ -12,7 +12,7 @@ package tests
 	public class TestUndoableCommand
 	{
 		// Reference declaration for class to test
-		private var _undoableCommand:UndoableCommand;
+		private var _undoableCommand:UndoableCommandBase;
 		
 		private var testArray:Array;
 		private var testObject:Object;
@@ -30,7 +30,7 @@ package tests
 		public function setupTests():void {
 			testArray = new Array();
 			eventBus = new EventDispatcher();
-			_undoableCommand = new UndoableCommand(doStuff, undoStuff);
+			_undoableCommand = new UndoableCommandBase(doStuff, undoStuff);
 			_undoableCommand.eventDispatcher = eventBus;
 		}
 		

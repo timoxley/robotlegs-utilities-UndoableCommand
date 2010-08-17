@@ -1,11 +1,11 @@
 package tests {
-	import org.robotlegs.utilities.undoablecommand.ManagedUndoableCommand;
+	import org.robotlegs.utilities.undoablecommand.UndoableCommand;
 	
 	
 	/**
 	 * @private
 	 */
-	public class MockManagedUndoableCommand extends ManagedUndoableCommand {
+	public class MockManagedUndoableCommand extends UndoableCommand {
 		
 		/**
 		 * Reference to some array to be tested on.
