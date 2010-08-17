@@ -13,9 +13,9 @@ package tests
 		// Reference declaration for class to test
 		private var history:CommandHistory;
 		private var eventBus:EventDispatcher;
-		private var bananaCommand:MockUndoableCommand;
-		private var appleCommand:MockUndoableCommand;
-		private var pineappleCommand:MockUndoableCommand;
+		private var bananaCommand:MockUndoableCommandBase;
+		private var appleCommand:MockUndoableCommandBase;
+		private var pineappleCommand:MockUndoableCommandBase;
 		
 		public function TestHistoryEvents()
 		{
@@ -26,12 +26,12 @@ package tests
 			history = new CommandHistory();
 			eventBus = new EventDispatcher()	
 			history.eventDispatcher = eventBus;
-			MockUndoableCommand.testArray = new Array()
-			bananaCommand = new MockUndoableCommand();
+			MockUndoableCommandBase.testArray = new Array()
+			bananaCommand = new MockUndoableCommandBase();
 			bananaCommand.eventDispatcher = eventBus;
-			appleCommand = new MockUndoableCommand();
+			appleCommand = new MockUndoableCommandBase();
 			appleCommand.eventDispatcher = eventBus;
-			pineappleCommand = new MockUndoableCommand();
+			pineappleCommand = new MockUndoableCommandBase();
 			pineappleCommand.eventDispatcher = eventBus;
 		}
 		
@@ -39,7 +39,7 @@ package tests
 		public function reset():void {
 			history = null;
 			eventBus = null;
-			MockUndoableCommand.testArray = null;
+			MockUndoableCommandBase.testArray = null;
 		}
 		
 		

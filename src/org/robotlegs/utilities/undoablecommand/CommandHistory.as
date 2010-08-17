@@ -17,12 +17,15 @@ package org.robotlegs.utilities.undoablecommand
 		private var _historyStack:Vector.<IUndoableCommand>;
 		
 		/**
-		 * Pointer to the current command in the history stack
+		 * Pointer to the current command in the history stack.
 		 * First command starts at index 1.
 		 * If this is 0, we are pointing to no command (null) at the start of the stack
 		 */
 		public var currentPosition:uint;
 		
+		/**
+		 * Supplied event bus to fire events upon.
+		 */
 		[Inject]
 		public var eventDispatcher:IEventDispatcher;
 		
@@ -32,7 +35,7 @@ package org.robotlegs.utilities.undoablecommand
 		}
 		
 		/** 
-		 * True if there's a command to redo
+		 * True if there's a command to redo.
 		 * @return true if there's a command to redo
 		 */
 		public function get canStepForward():Boolean {
@@ -40,7 +43,7 @@ package org.robotlegs.utilities.undoablecommand
 		}
 		
 		/** 
-		 * True if there's a command to undo
+		 * True if there's a command to undo.
 		 * @return true if there's a command to undo
 		 */
 		public function get canStepBackward():Boolean {
@@ -49,7 +52,7 @@ package org.robotlegs.utilities.undoablecommand
 		
 		/** 
 		 * 
-		 * Redo/execute the next command on the history stack
+		 * Redo/execute the next command on the history stack.
 		 * @return position in history stack after this operation
 		 */
 		public function stepForward():uint {
@@ -63,17 +66,20 @@ package org.robotlegs.utilities.undoablecommand
 		}
 		
 		/** 
-		 * Undo the previous command on the history stack and set the currentCommand to the previous command 
+		 * Undo the previous command on the history stack and set the currentCommand to the previous command.
 		 * @return position in history stack after this operation
 		 */
 		public function stepBackward():uint {
 			var storeCurrentPosition:uint = currentPosition;
 			if (canStepBackward) {
-				// Hacky workaround:
-				// if undo was invoked from a commandHistory object,
+				// This is a hacky workaround:
+				// If the undo was invoked from a CommandHistory object,
 				// _historyStack[currentPosition - 1].undo() calls
-				// stepBackward() again (), in which case we want to prevent it from
+				// stepBackward() again, in which case we want to prevent it from
 				// updating the current position twice. I'm certain thar be a better way.
+				// Update 6 months later: I have no idea what I'm talking about here.
+				// I recall this whole business produced some fairly retarded program flow, 
+				// need to rethink design.
 				_historyStack[currentPosition - 1].undo();
 				currentPosition = storeCurrentPosition - 1;
 			}
@@ -107,7 +113,7 @@ package org.robotlegs.utilities.undoablecommand
 				positionToMoveTo = currentPosition - numTimes;
 			}
 			
-			// Move backward
+			// Move backward while possible
 			while(canStepBackward && currentPosition != positionToMoveTo) {
 				stepBackward();
 			}
@@ -152,7 +158,7 @@ package org.robotlegs.utilities.undoablecommand
 		/** 
 		 * Push a new command into the current position on the history stack and execute it.
 		 * If there are commands further forward in the history stack,  
-		 * those commands are lost and this command becomes
+		 * those commands are removed and this command becomes the
 		 * new top of the command stack.
 		 * 
 		 * @return position in history stack after this operation
@@ -162,6 +168,7 @@ package org.robotlegs.utilities.undoablecommand
 			if (currentPosition != numberOfHistoryItems) {
 				_historyStack = _historyStack.slice(0, currentPosition);	
 			}
+			
 			_historyStack.push(command);
 			
 			// Execute the command & move pointer forward
@@ -172,8 +179,9 @@ package org.robotlegs.utilities.undoablecommand
 		/**
 		 * Gets the command at the top of the history stack. This command will have already been executed.
 		 * @return command at the current position in the history stack,
-		 * or null if we're at position 0, or there are simply no commands
+		 * or null if we're at position 0, in this case, there may be no commands on the stack at all.
 		 * @see currentPosition
+		 * @see numberOfHistoryItems
 		 */
 		public function get currentCommand():IUndoableCommand {
 			if (_historyStack.length == 0 || currentPosition == 0) {

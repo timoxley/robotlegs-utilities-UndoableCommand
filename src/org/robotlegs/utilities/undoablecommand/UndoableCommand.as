@@ -4,9 +4,12 @@ package org.robotlegs.utilities.undoablecommand
 	
 	/**
 	 * This command handles adding itself to the provided/injected CommandHistory.
-	 * All functions assume the CommandHistory dependency (history) has been provided.
-	 * UndoableCommands are only pushed to the CommandHistory once the Command has been executed, 
-	 * and removed once the Command has been undone.
+	 * 
+	 * UndoableCommands are pushed to the CommandHistory only once the Command has been executed, 
+	 * and are removed once the Command has been undone. Undoable commands can be cancelled by calling cancel() from within
+	 * their doExecute() function, and they will not be added to the history.
+	 * 
+	 * All functions assume the CommandHistory dependency has been provided as the public property 'history'.
 	 */
 	public class UndoableCommand extends UndoableCommandBase
 	{
@@ -38,14 +41,23 @@ package org.robotlegs.utilities.undoablecommand
 			super(doFunction, undoFunction);
 		}
 		
+		/**
+		 * Call this function in your doExecute method to prevent this item from being added to the history stack.
+		 * TODO: Throw an error if cancelling within a redo. Currently assumes if the cancel condition did not fire
+		 * on the first run, they will pass on subsequent executions. This is faulty.
+		 */
 		public function cancel():void {
 			isCancelled = true;
-			trace("isCancelled");
 		}
 		
 		/**
 		 * Executes the command.
 		 * Override this function in your subclasses to implement your command's actions.
+		 * You may call cancel() at any point in this function to prevent it from being added 
+		 * to the history stack, but remember that execution does not stop when you call cancel and
+		 * you will need to ensure the doExecute method did not actually make any changes.
+		 * 
+		 * Ensure you call super.doExecute() at the end of your subclassed method.
 		 * Note command is only automatically pushed to history once we try to execute this command
 		 * @inheritDoc
 		 * @see undoExecute
@@ -61,7 +73,7 @@ package org.robotlegs.utilities.undoablecommand
 		}
 		
 		/**
-		 * Override this function in your subclasses to implement the undo of the actions performed in doExecute().
+		 * Override this function in your subclasses to implement the undo of the actions performed in doExecute(). Ensure you call super.undoExecute() at the end of your subclassed method.
 		 * @inheritDoc
 		 * @see doExecute
 		 * @throws Error Prevents history corruption by throwing error if trying to undo this command and it's not at the top of the history (i.e. next to be undone). 

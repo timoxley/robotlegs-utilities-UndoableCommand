@@ -14,7 +14,7 @@ package tests
 	public class TestManagedUndoableCommand
 	{
 		// Reference declaration for class to test
-		private var _managedUndoableCommand:MockManagedUndoableCommand;
+		private var _managedUndoableCommand:MockUndoableCommand;
 		
 		public function TestManagedUndoableCommand()
 		{
@@ -35,8 +35,8 @@ package tests
 			_managedUndoableCommand = createCommand();
 		}
 		
-		private function createCommand():MockManagedUndoableCommand {
-			var newCommand:MockManagedUndoableCommand = new MockManagedUndoableCommand();
+		private function createCommand():MockUndoableCommand {
+			var newCommand:MockUndoableCommand = new MockUndoableCommand();
 			newCommand.testArray = testArray;
 			newCommand.history = history;
 			newCommand.eventDispatcher = eventBus;
@@ -99,7 +99,7 @@ package tests
 		
 		[Test]
 		public function testDefaultFunctions():void {
-			var command:MockManagedUndoableCommand = createCommand();/// = new MockManagedUndoableCommand();
+			var command:MockUndoableCommand = createCommand();/// = new MockManagedUndoableCommand();
 			
 			command.testArray = testArray;
 			command.history = history;
@@ -116,11 +116,11 @@ package tests
 			Assert.assertNull(history.currentCommand);
 			Assert.assertEquals(0, history.currentPosition);
 			
-			var appleCommand:MockManagedUndoableCommand = createCommand();
+			var appleCommand:MockUndoableCommand = createCommand();
 			
-			var bananaCommand:MockManagedUndoableCommand = createCommand();
+			var bananaCommand:MockUndoableCommand = createCommand();
 			
-			var pineappleCommand:MockManagedUndoableCommand = createCommand();
+			var pineappleCommand:MockUndoableCommand = createCommand();
 			
 			/*_testHistory.push(appleCommand);
 			_testHistory.push(bananaCommand);
@@ -144,7 +144,7 @@ package tests
 		// Test forward/back/position settings while
 		// moving backwards & forwards
 		public function testAddToHistory():void {
-			var appleCommand:MockManagedUndoableCommand = createCommand();
+			var appleCommand:MockUndoableCommand = createCommand();
 			Assert.assertNull(history.currentCommand);
 			appleCommand.execute();
 			Assert.assertEquals(appleCommand, history.currentCommand);
@@ -155,7 +155,7 @@ package tests
 		// Test forward/back/position settings while
 		// moving backwards & forwards
 		public function testCommandUndo():void {
-			var appleCommand:MockManagedUndoableCommand = createCommand();
+			var appleCommand:MockUndoableCommand = createCommand();
 			Assert.assertNull(history.currentCommand);
 			appleCommand.execute();
 			
@@ -171,7 +171,7 @@ package tests
 		// Test forward/back/position settings while
 		// moving backwards & forwards
 		public function testHistoryUndo():void {
-			var appleCommand:MockManagedUndoableCommand = createCommand();
+			var appleCommand:MockUndoableCommand = createCommand();
 			Assert.assertNull(history.currentCommand);
 			appleCommand.execute();
 			Assert.assertEquals(1, testArray.length);
@@ -190,7 +190,7 @@ package tests
 		[Test]
 		// Test cancelling the command
 		public function testCancellingDoesNothing():void {
-			var appleCommand:MockManagedUndoableCommand = createCommand();
+			var appleCommand:MockUndoableCommand = createCommand();
 			appleCommand.shouldCancel = true;
 			appleCommand.execute();
 			//Make sure nothing actually happened
@@ -203,7 +203,7 @@ package tests
 		[Test(expects="Error")]
 		// Test trying to undo a cancelled command throws an error
 		public function testUndoingACancelledCommandErrors():void {
-			var appleCommand:MockManagedUndoableCommand = createCommand();
+			var appleCommand:MockUndoableCommand = createCommand();
 			appleCommand.shouldCancel = true;
 			appleCommand.execute();
 			appleCommand.undo();

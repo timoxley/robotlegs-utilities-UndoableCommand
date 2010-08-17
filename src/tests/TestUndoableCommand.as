@@ -86,8 +86,8 @@ package tests
 		
 		[Test]
 		public function testDefaultFunctions():void {
-			var command:MockUndoableCommand = new MockUndoableCommand();
-			MockUndoableCommand.testArray = testArray;	
+			var command:MockUndoableCommandBase = new MockUndoableCommandBase();
+			MockUndoableCommandBase.testArray = testArray;	
 			command.execute();	
 			Assert.assertEquals(testArray.length, 1);
 			command.undo();	

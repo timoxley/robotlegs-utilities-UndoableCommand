@@ -4,17 +4,17 @@ package org.robotlegs.utilities.undoablecommand.commands
 
 	
 	/**
-	 * Map this command to HistoryEvent.STEP_BACKWARD to trigger an undo action.
+	 * Map this command to the HistoryEvent.STEP_BACKWARD event to trigger an undo action.
+	 * Provided for convenience.
 	 */
 	public class StepBackwardCommand
 	{
 		[Inject]
 		public var commandHistory:CommandHistory;
 		
-		public function StepBackwardCommand() {
-			
-		}
-		
+		/**
+		 * Will undo a single command, if possible. Fails silently if not.
+		 */
 		public function execute():void {
 			commandHistory.stepBackward();
 		}

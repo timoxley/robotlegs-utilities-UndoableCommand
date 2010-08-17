@@ -5,23 +5,28 @@ package org.robotlegs.utilities.undoablecommand
 	import org.robotlegs.utilities.undoablecommand.interfaces.IUndoableCommand;
 	
 	/**
-	 * CommandEvents occur when commands finish executing or undoing
+	 * CommandEvents are fired when single commands finish executing, finish undoing or are cancelled.
 	 * 
 	 */
 	public class CommandEvent extends Event
 	{
 		/**
-		 * Defines the value of the type property of an executeComplete event object.
+		 * CommandEvent of this type will be fired when a command has completed executing/redoing.
 		 */
 		public static const EXECUTE_COMPLETE:String = "executeComplete";
+		
 		/**
-		 * Defines the value of the type property of an undoExecuteComplete event object.
+		 * CommandEvent of this type will be fired when a command has completed undoing.
 		 */
 		public static const UNDO_EXECUTE_COMPLETE:String = "undoExecuteComplete";
 		
-		public static const CANCELLED:String = "executeCancelled";
 		/**
-		 * The command associated with the event
+		 * CommandEvent of this type will be fired when execution of a command was cancelled.
+		 */
+		public static const CANCELLED:String = "executeCancelled";
+		
+		/**
+		 * The command associated with the event.
 		 */
 		public var command:IUndoableCommand;
 		

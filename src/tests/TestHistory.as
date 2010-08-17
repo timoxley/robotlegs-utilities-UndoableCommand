@@ -20,7 +20,7 @@ package tests
 			_testHistory = new CommandHistory();
 			_testHistory.eventDispatcher = new EventDispatcher();
 			testArray = new Array();
-			MockUndoableCommand.testArray = testArray;
+			MockUndoableCommandBase.testArray = testArray;
 			
 		}
 		
@@ -65,8 +65,8 @@ package tests
 		// and also KEEPS history items
 		[Test]
 		public function testFastForward():void {
-			_testHistory.push(new MockUndoableCommand());
-			_testHistory.push(new MockUndoableCommand());
+			_testHistory.push(new MockUndoableCommandBase());
+			_testHistory.push(new MockUndoableCommandBase());
 		
 			newPosition = _testHistory.stepBackward();
 			_testHistory.stepBackward();
@@ -84,10 +84,10 @@ package tests
 		// Ensure numberOfHistoryItems equals the number of items in history
 		public function testAddItems():void {
 			
-			_testHistory.push(new MockUndoableCommand());
-			_testHistory.push(new MockUndoableCommand());
-			_testHistory.push(new MockUndoableCommand());
-			var newPosition:uint = _testHistory.push(new MockUndoableCommand());
+			_testHistory.push(new MockUndoableCommandBase());
+			_testHistory.push(new MockUndoableCommandBase());
+			_testHistory.push(new MockUndoableCommandBase());
+			var newPosition:uint = _testHistory.push(new MockUndoableCommandBase());
 			Assert.assertEquals(newPosition, 4);
 			Assert.assertEquals(_testHistory.numberOfHistoryItems, 4);
 			Assert.assertEquals(_testHistory.currentPosition, 4);
@@ -101,10 +101,10 @@ package tests
 		// but also KEEPS history items
 		public function testRewind():void {
 			// Add 4 Commands
-			_testHistory.push(new MockUndoableCommand());
-			_testHistory.push(new MockUndoableCommand());
-			_testHistory.push(new MockUndoableCommand());
-			_testHistory.push(new MockUndoableCommand());
+			_testHistory.push(new MockUndoableCommandBase());
+			_testHistory.push(new MockUndoableCommandBase());
+			_testHistory.push(new MockUndoableCommandBase());
+			_testHistory.push(new MockUndoableCommandBase());
 			
 			var newPosition:uint = _testHistory.rewind();
 			
@@ -121,11 +121,11 @@ package tests
 		// multiple calls work
 		public function testCanStepBackward():void {
 			Assert.assertFalse(_testHistory.canStepBackward);
-			_testHistory.push(new MockUndoableCommand());
+			_testHistory.push(new MockUndoableCommandBase());
 			Assert.assertTrue(_testHistory.canStepBackward);
-			_testHistory.push(new MockUndoableCommand());
-			_testHistory.push(new MockUndoableCommand());
-			_testHistory.push(new MockUndoableCommand());
+			_testHistory.push(new MockUndoableCommandBase());
+			_testHistory.push(new MockUndoableCommandBase());
+			_testHistory.push(new MockUndoableCommandBase());
 			Assert.assertTrue(_testHistory.canStepBackward);
 			_testHistory.rewind();
 			Assert.assertEquals(_testHistory.currentPosition, 0);
@@ -140,9 +140,9 @@ package tests
 		// multiple calls work
 		public function testCanStepForward():void {
 			Assert.assertFalse(_testHistory.canStepForward);
-			_testHistory.push(new MockUndoableCommand());
-			_testHistory.push(new MockUndoableCommand());
-			_testHistory.push(new MockUndoableCommand());
+			_testHistory.push(new MockUndoableCommandBase());
+			_testHistory.push(new MockUndoableCommandBase());
+			_testHistory.push(new MockUndoableCommandBase());
 			Assert.assertFalse(_testHistory.canStepForward);
 			_testHistory.rewind();
 			Assert.assertEquals(_testHistory.currentPosition, 0);
@@ -157,12 +157,12 @@ package tests
 		// Ensure current position tracks correctly
 		// after multiple calls to stepForward & stepBackward
 		public function testCurrentPosition():void {
-			_testHistory.push(new MockUndoableCommand());
-			_testHistory.push(new MockUndoableCommand());
-			_testHistory.push(new MockUndoableCommand());
-			_testHistory.push(new MockUndoableCommand());
-			_testHistory.push(new MockUndoableCommand());
-			_testHistory.push(new MockUndoableCommand());
+			_testHistory.push(new MockUndoableCommandBase());
+			_testHistory.push(new MockUndoableCommandBase());
+			_testHistory.push(new MockUndoableCommandBase());
+			_testHistory.push(new MockUndoableCommandBase());
+			_testHistory.push(new MockUndoableCommandBase());
+			_testHistory.push(new MockUndoableCommandBase());
 			Assert.assertEquals(_testHistory.currentPosition, 6);
 			Assert.assertFalse(_testHistory.canStepForward);
 			Assert.assertTrue(_testHistory.canStepBackward);
@@ -216,16 +216,16 @@ package tests
 		// Ensure pushing a command to the middle of the
 		// history, wipes subsequent history
 		public function testPushWhileNotAtEndpoint():void {
-			_testHistory.push(new MockUndoableCommand());
-			_testHistory.push(new MockUndoableCommand());
-			_testHistory.push(new MockUndoableCommand());
-			_testHistory.push(new MockUndoableCommand());
+			_testHistory.push(new MockUndoableCommandBase());
+			_testHistory.push(new MockUndoableCommandBase());
+			_testHistory.push(new MockUndoableCommandBase());
+			_testHistory.push(new MockUndoableCommandBase());
 			Assert.assertEquals(_testHistory.currentPosition, 4);
 			
 			_testHistory.stepBackward();
 			_testHistory.stepBackward();
 			Assert.assertEquals(_testHistory.currentPosition, 2);
-			_testHistory.push(new MockUndoableCommand());
+			_testHistory.push(new MockUndoableCommandBase());
 			// Note it should wipe TWO commands from history, 
             // replacing the first with new
 			Assert.assertEquals(_testHistory.currentPosition, 3);
@@ -234,7 +234,7 @@ package tests
 			_testHistory.rewind();
 			Assert.assertFalse(_testHistory.canStepBackward);
 			Assert.assertTrue(_testHistory.canStepForward);
-			_testHistory.push(new MockUndoableCommand());
+			_testHistory.push(new MockUndoableCommandBase());
 			Assert.assertEquals(_testHistory.currentPosition, 1);
 			Assert.assertTrue(_testHistory.canStepBackward);
 			Assert.assertFalse(_testHistory.canStepForward);
@@ -250,7 +250,7 @@ package tests
 			Assert.assertEquals(_testHistory.currentPosition, 0);
 			Assert.assertFalse(_testHistory.canStepBackward);
 			Assert.assertFalse(_testHistory.canStepForward);
-			_testHistory.push(new MockUndoableCommand());
+			_testHistory.push(new MockUndoableCommandBase());
 			Assert.assertEquals(_testHistory.currentPosition, 1);
 			_testHistory.rewind();
 			Assert.assertEquals(_testHistory.currentPosition, 0);
@@ -260,7 +260,7 @@ package tests
 			Assert.assertEquals(_testHistory.currentPosition, 1);
 			Assert.assertFalse(_testHistory.canStepForward);
 			Assert.assertTrue(_testHistory.canStepBackward);
-			_testHistory.push(new MockUndoableCommand());
+			_testHistory.push(new MockUndoableCommandBase());
 			Assert.assertEquals(_testHistory.currentPosition, 2);
 			Assert.assertFalse(_testHistory.canStepForward);
 			Assert.assertTrue(_testHistory.canStepBackward);
@@ -272,9 +272,9 @@ package tests
 		public function testGetCurrentCommand():void {
 			Assert.assertNull(_testHistory.currentCommand);
 			Assert.assertEquals(0, _testHistory.currentPosition);
-			var appleCommand:MockUndoableCommand = new MockUndoableCommand();
-			var bananaCommand:MockUndoableCommand = new MockUndoableCommand();
-			var pineappleCommand:MockUndoableCommand = new MockUndoableCommand();
+			var appleCommand:MockUndoableCommandBase = new MockUndoableCommandBase();
+			var bananaCommand:MockUndoableCommandBase = new MockUndoableCommandBase();
+			var pineappleCommand:MockUndoableCommandBase = new MockUndoableCommandBase();
 			
 			_testHistory.push(appleCommand);
 			_testHistory.push(bananaCommand);
