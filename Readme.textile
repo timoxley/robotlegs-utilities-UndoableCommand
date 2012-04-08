@@ -9,7 +9,7 @@ h2. Features
 * Rewind/Fast Forward history
 * Rewrite history
 * Cancellable commands 
-* Gets the ladies
+* Gets the ladies and/or gents
 
 h2. Important Classes
 
