@@ -4,7 +4,7 @@ Undoable Commands aims to provide the most useful functions you'd need for undo/
 
 h2. Ddddddeprecated!
 
-Great news everyone! After years of inactivity (sadly, I no longer work on the Flash platform), `UndoableCommand` development continues "courteousy of d3zza on his fork: d3zza/robotlegs-utilities-UndoableCommand":https://github.com/d3zza/robotlegs-utilities-UndoableCommand. Check it out! Thanks d3zza!
+Great news everyone! After years of inactivity (sadly, I no longer work on the Flash platform), `UndoableCommand` development continues courteousy of d3zza on his fork: "d3zza/robotlegs-utilities-UndoableCommand":https://github.com/d3zza/robotlegs-utilities-UndoableCommand. Check it out! Thanks d3zza!
 
 h2. Features
 
