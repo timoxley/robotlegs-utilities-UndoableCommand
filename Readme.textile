@@ -2,6 +2,10 @@ h1. Undoable Commands and History Controller for the Robotlegs Framework
 
 Undoable Commands aims to provide the most useful functions you'd need for undo/redo functionality in a gui app. I've successfully used in on a number of private projects.
 
+h2. Ddddddeprecated!
+
+Great news everyone! After years of inactivity (sadly, I no longer work on the Flash platform), `UndoableCommand` development continues "courteousy of d3zza on his fork: d3zza/robotlegs-utilities-UndoableCommand":https://github.com/d3zza/robotlegs-utilities-UndoableCommand. Check it out! Thanks d3zza!
+
 h2. Features
 
 * Keeps a linear history of executed Commands
